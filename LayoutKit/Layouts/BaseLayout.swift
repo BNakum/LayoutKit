@@ -9,25 +9,34 @@
 import UIKit
 
 /**
- A base class for layouts that merely position other layouts.
+ A base class for layouts.
  This layout does not require a UIView at runtime unless a configuration block has been provided.
 
  The class is public so that makeView() can conform to the public Layout protocol.
  */
-public class PositioningLayout<View: UIView> {
+public class BaseLayout<View: UIView> {
+
+    public let alignment: Alignment
+    public let flexibility: Flexibility
+    public let tag: Int
     public let config: (View -> Void)?
 
-    public init(config: (View -> Void)?) {
+    public init(alignment: Alignment, flexibility: Flexibility, tag: Int = 0, config: (View -> Void)?) {
+        self.alignment = alignment
+        self.flexibility = flexibility
+        self.tag = tag
         self.config = config
     }
 
-    public func makeView() -> UIView? {
+    public func makeView(from recycler: ViewRecycler, configure: Bool) -> UIView? {
         guard let config = config else {
             // Nothing needs to be configured, so this layout doesn't require a UIView.
             return nil
         }
-        let view = View()
-        config(view)
+        let view: View = recycler.makeView(tag: tag)
+        if configure {
+            config(view)
+        }
         return view
     }
 }
