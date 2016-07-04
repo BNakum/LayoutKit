@@ -2,18 +2,19 @@ language: objective-c
 osx_image: xcode7.3
 script:
   set -o pipefail &&
-  xcodebuild build -project LayoutKit.xcodeproj -scheme LayoutKitSampleApp -sdk iphonesimulator9.3
+  xcodebuild build -project LayoutKit.xcodeproj -scheme LayoutKitSampleApp-iOS -sdk iphonesimulator9.3
     -destination 'platform=iOS Simulator,name=iPhone 6,OS=9.3'
     -destination 'platform=iOS Simulator,name=iPhone 6 Plus,OS=9.3'
     -destination 'platform=iOS Simulator,name=iPhone 6,OS=8.4'
     -destination 'platform=iOS Simulator,name=iPhone 6 Plus,OS=8.4'
   | xcpretty &&
-  xcodebuild test -project LayoutKit.xcodeproj -scheme LayoutKit -sdk iphonesimulator9.3
+  xcodebuild test -project LayoutKit.xcodeproj -scheme LayoutKit-iOS -sdk iphonesimulator9.3
     -destination 'platform=iOS Simulator,name=iPhone 6,OS=9.3'
     -destination 'platform=iOS Simulator,name=iPhone 6 Plus,OS=9.3'
     -destination 'platform=iOS Simulator,name=iPhone 6,OS=8.4'
     -destination 'platform=iOS Simulator,name=iPhone 6 Plus,OS=8.4'
-  | xcpretty
+  | xcpretty && 
+  xcodebuild test -project LayoutKit.xcodeproj -scheme LayoutKit-macOS -sdk macosx10.11 | xcpretty
   
 after_success:
   - bash <(curl -s https://codecov.io/bash)
